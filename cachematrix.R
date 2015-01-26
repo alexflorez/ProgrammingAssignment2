@@ -2,18 +2,18 @@
 ## Making use of makeCacheMatrix and cacheSolve
 
 ## makeCacheMatrix creates the "matrix" object and cache its inverse.
-## x is a square matrix and has inverse
+## mat is a square matrix and has inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-    m <- NULL
+makeCacheMatrix <- function(mat = matrix()) {
+    inv_mat <- NULL
     
-    set <- function(y) {
-        x <<- y
+    set <- function(other_mat) {
+        mat <<- other_mat
         inv_mat <<- NULL
     }
     
     get <- function() { 
-        x
+        mat
     }
     
     setInvMat <- function(inverse_matrix) {
@@ -28,9 +28,17 @@ makeCacheMatrix <- function(x = matrix()) {
          getInvMat = getInvMat)
 }
 
+## cacheSolve returns the value cached of the inverse matrix ("matrix" created with makeCacheMatrix)
+## if this inverse has been previously calculated, otherwise computes the inverse
 
-## cacheSolve computes the inverse of the "matrix" returned by makeCacheMatrix
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(mat, ...) {
+    inv_mat <- mat$getInvMat()
+    if(!is.null(inv_mat)) {
+        message("getting cached inverse")
+        return(inv_mat)
+    }
+    data <- mat$get()
+    inv_mat <- solve(data, ...)
+    mat$setInvMat(inv_mat)
+    inv_mat
 }
